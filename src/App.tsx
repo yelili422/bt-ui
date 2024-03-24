@@ -1,3 +1,4 @@
+import { Card } from 'antd'
 import './App.css'
 import RssTable from './components/RssTable'
 
@@ -6,7 +7,9 @@ function App() {
   return (
     <>
       <div>
-        <RssTable />
+        <Card title="RSS">
+          <RssTable />
+        </Card>
       </div>
     </>
   )
