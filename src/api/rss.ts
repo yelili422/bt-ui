@@ -1,6 +1,5 @@
 import useSWR from "swr";
-import { fetcher } from "../libs/fetch";
-import axios from "axios";
+import { fetcher, api } from "../libs/fetch";
 
 interface RssProps {
   id: number;
@@ -23,7 +22,7 @@ export const useRss = () => {
 };
 
 export const updateRss = async (rss: RssProps) => {
-  await axios.put(`/api/rss/${rss.id}`, rss);
+  await api.put(`/api/rss/${rss.id}`, rss);
 };
 
 export type { RssProps };
