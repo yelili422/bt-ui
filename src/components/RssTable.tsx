@@ -1,5 +1,5 @@
 import { RssProps, updateRss, useRss } from "../api/rss";
-import { Button, Switch, Table } from 'antd';
+import { Button, Card, Switch, Table } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons'
 
 const RssTable = () => {
@@ -12,7 +12,7 @@ const RssTable = () => {
       key: 'enabled',
       render: (enabled: boolean, record: RssProps) => (
         <Switch checked={enabled} onChange={
-          async (checked) => {
+          async (checked: boolean) => {
             record.enabled = checked;
             await updateRss(record);
             reloadRss();
@@ -49,7 +49,7 @@ const RssTable = () => {
       title: 'Action',
       key: 'action',
       render: (_val: string, record: RssProps) => (
-        <Button type="primary" shape="circle" icon={<DeleteOutlined />} danger onClick={
+        <Button type="primary" icon={<DeleteOutlined />} danger onClick={
           () => {
             console.log('delete', record.id);
           }
@@ -59,13 +59,15 @@ const RssTable = () => {
   ]
 
   return (
-    <Table
-      loading={isLoading}
-      dataSource={isError ? [] : rssList}
-      columns={columns}
-      rowKey={(record) => record.id.toString()}
-      pagination={false}
-    />
+    <Card title="RSS">
+      <Table
+        loading={isLoading}
+        dataSource={isError ? [] : rssList}
+        columns={columns}
+        rowKey={(record) => record.id.toString()}
+        pagination={false}
+      />
+    </Card>
   );
 };
 
