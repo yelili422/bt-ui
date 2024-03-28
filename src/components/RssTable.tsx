@@ -1,8 +1,8 @@
-import { RssProps, updateRss, useRss } from "../api/rss";
-import { Button, Card, Switch, Table } from 'antd';
+import { RssProps, deleteRss, updateRss, useRss } from "../api/rss";
+import { Button, Switch, Table } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons'
 
-const RssTable = () => {
+const RssTable: React.FC = () => {
   const { rssList, isError, isLoading, reloadRss } = useRss();
 
   const columns = [
@@ -49,25 +49,28 @@ const RssTable = () => {
       title: 'Action',
       key: 'action',
       render: (_val: string, record: RssProps) => (
-        <Button type="primary" icon={<DeleteOutlined />} danger onClick={
-          () => {
-            console.log('delete', record.id);
-          }
-        } />
+        <Button
+          type="primary"
+          icon={<DeleteOutlined />}
+          danger
+          shape="circle"
+          onClick={async () => {
+            await deleteRss(record.id);
+            reloadRss();
+          }}
+        />
       ),
     }
   ]
 
   return (
-    <Card title="RSS">
-      <Table
-        loading={isLoading}
-        dataSource={isError ? [] : rssList}
-        columns={columns}
-        rowKey={(record) => record.id.toString()}
-        pagination={false}
-      />
-    </Card>
+    <Table
+      loading={isLoading}
+      dataSource={isError ? [] : rssList}
+      columns={columns}
+      rowKey={(record) => record.id.toString()}
+      pagination={false}
+    />
   );
 };
 

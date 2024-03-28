@@ -1,4 +1,5 @@
 import './App.css'
+import RssFormModal from './components/RssForm'
 import RssTable from './components/RssTable'
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <>
       <div>
         <RssTable />
+        <RssFormModal />
       </div>
     </>
   )

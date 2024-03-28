@@ -11,7 +11,11 @@ interface RssProps {
 }
 
 export const useRss = () => {
-  const { data, error, isLoading, mutate } = useSWR<RssProps[]>(`/api/rss`, fetcher);
+  const { data, error, isLoading, mutate } = useSWR<RssProps[]>(
+    `/api/rss`,
+    fetcher,
+    { refreshInterval: 1000 }
+  );
 
   return {
     rssList: data,
@@ -23,6 +27,14 @@ export const useRss = () => {
 
 export const updateRss = async (rss: RssProps) => {
   await api.put(`/api/rss/${rss.id}`, rss);
+};
+
+export const deleteRss = async (id: number) => {
+  await api.delete(`/api/rss/${id}`);
+};
+
+export const createRss = async (rss: RssProps) => {
+  await api.post(`/api/rss`, rss);
 };
 
 export type { RssProps };
