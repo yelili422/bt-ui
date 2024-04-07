@@ -1,7 +1,80 @@
-import { FloatButton, Form, FormInstance, Input, InputNumber, Modal, Select, Switch } from "antd";
-import { createRss, type RssProps } from "../api/rss";
+import { Col, FloatButton, Form, FormInstance, Input, InputNumber, Modal, Row, Select, SelectProps, Switch, Tag } from "antd";
+import { createRss, RssProps, RssFilterProps, RssFilterAction, RssFilterRule } from "../api/rss";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
+
+import './RssForm.css';
+import { splitBefore } from "../libs/string";
+
+type TagRender = SelectProps['tagRender'];
+type SelectOptions = SelectProps['options'];
+type OptionRender = SelectProps['optionRender'];
+
+const filterOptions: SelectOptions = [
+  { label: 'Baha', value: 'Include-FilenameRegex-Baha' },
+  { label: 'Crunchyroll', value: 'Include-FilenameRegex-CR|Crunchyroll' },
+  { label: '*.mp4', value: 'Exclude-FilenameRegex-\\.mp4$' },
+  { label: '合集', value: 'Exclude-FilenameRegex-合集' },
+];
+
+const splitFilterValue = (value: string): RssFilterProps => {
+  const [ruleAction, rest] = splitBefore('-', value);
+  const [ruleType, content] = splitBefore('-', rest);
+  return [
+    { [ruleType]: content } as RssFilterRule,
+    ruleAction as RssFilterAction,
+  ];
+};
+
+const tagRender: TagRender = (props) => {
+  const { label, value, closable, onClose } = props;
+  const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const [_rule, action] = splitFilterValue(value?.toString() || '');
+  const labelColor = action === 'Include' ? 'blue' : 'red';
+
+  return (
+    <Tag
+      color={labelColor}
+      onMouseDown={onPreventMouseDown}
+      closable={closable}
+      onClose={onClose}
+    >
+      {label}
+    </Tag>
+  )
+};
+
+const filterOptionContent = (rule: RssFilterRule) => {
+  if ('FilenameRegex' in rule) {
+    return (
+      <span>
+        <span className="rule-wrapper-text">/</span>
+        <span>{rule.FilenameRegex}</span>
+        <span className="rule-wrapper-text">/i</span>
+      </span>
+    );
+  }
+};
+
+const optionRender: OptionRender = (option) => {
+  const [rule, action] = splitFilterValue(option.data.value);
+  return (
+    <Row>
+      <Col span={20}>
+        {filterOptionContent(rule)}
+      </Col>
+      <Col span={4}>
+        <span className='rule-action-text'>
+          {action.toLowerCase()}
+        </span>
+      </Col>
+    </Row>
+  )
+}
 
 const RssForm: React.FC<{
   onFormInstanceReady: (instance: FormInstance<RssProps>) => void;
@@ -22,6 +95,7 @@ const RssForm: React.FC<{
           rss_type: 'mikan',
           url: '',
           enabled: true,
+          filters: [],
         }}
       >
         <Form.Item<RssProps> name="enabled" label="Enabled" style={{ display: 'none' }}>
@@ -49,6 +123,21 @@ const RssForm: React.FC<{
         >
           <Input.TextArea />
         </Form.Item>
+        <Form.Item label="Filters">
+          <Form.Item<RssProps> name="filters" label="Filters" style={{ display: 'none' }}>
+            <Input />
+          </Form.Item>
+          <Select
+            mode="multiple"
+            tagRender={tagRender}
+            optionRender={optionRender}
+            options={filterOptions}
+            onChange={(values: string[]) => {
+              const filters = values.map((value) => splitFilterValue(value));
+              form.setFieldValue('filters', filters);
+            }}
+          />
+        </Form.Item>
       </Form>
     );
   };
@@ -68,8 +157,8 @@ const RssFormModal: React.FC = () => {
         destroyOnClose={true}
         onOk={async () => {
           try {
-            const values = await formInstance?.validateFields();
-            await createRss(values!);
+            const formValues = await formInstance?.validateFields();
+            await createRss(formValues!);
             setOpen(false);
           } catch (error) {
             console.error('Failed:', error);
@@ -83,6 +172,5 @@ const RssFormModal: React.FC = () => {
     </>
   )
 };
-
 
 export default RssFormModal;

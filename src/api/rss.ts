@@ -1,6 +1,17 @@
 import useSWR from "swr";
 import { fetcher, api } from "../libs/fetch";
 
+type RssFilterRule = {
+  FilenameRegex: string;
+};
+
+type RssFilterAction = "Include" | "Exclude";
+
+type RssFilterProps = [
+  rule: RssFilterRule,
+  action: RssFilterAction,
+];
+
 interface RssProps {
   id: number;
   url: string;
@@ -8,6 +19,7 @@ interface RssProps {
   season: number | null;
   rss_type: string;
   enabled: boolean;
+  filters: Array<RssFilterProps> | null;
 }
 
 export const useRss = () => {
@@ -37,4 +49,4 @@ export const createRss = async (rss: RssProps) => {
   await api.post(`/api/rss`, rss);
 };
 
-export type { RssProps };
+export type { RssProps, RssFilterProps, RssFilterRule, RssFilterAction };

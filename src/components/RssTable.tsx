@@ -1,5 +1,5 @@
 import { RssProps, deleteRss, updateRss, useRss } from "../api/rss";
-import { Button, Switch, Table } from 'antd';
+import { Button, Popconfirm, Switch, Table } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons'
 
 const RssTable: React.FC = () => {
@@ -49,16 +49,21 @@ const RssTable: React.FC = () => {
       title: 'Action',
       key: 'action',
       render: (_val: string, record: RssProps) => (
-        <Button
-          type="primary"
-          icon={<DeleteOutlined />}
-          danger
-          shape="circle"
-          onClick={async () => {
+        <Popconfirm
+          title="Delete the RSS."
+          description="Are you sure you want to delete this RSS?"
+          onConfirm={async () => {
             await deleteRss(record.id);
             reloadRss();
           }}
-        />
+        >
+          <Button
+            type="primary"
+            icon={<DeleteOutlined />}
+            danger
+            shape="circle"
+          />
+        </Popconfirm>
       ),
     }
   ]
