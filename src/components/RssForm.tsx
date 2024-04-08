@@ -15,6 +15,8 @@ const filterOptions: SelectOptions = [
   { label: 'Crunchyroll', value: 'Include-FilenameRegex-CR|Crunchyroll' },
   { label: '*.mp4', value: 'Exclude-FilenameRegex-\\.mp4$' },
   { label: '合集', value: 'Exclude-FilenameRegex-合集' },
+  { label: '简日', value: 'Exclude-FilenameRegex-简日' },
+  { label: '繁日', value: 'Exclude-FilenameRegex-繁日' },
 ];
 
 const splitFilterValue = (value: string): RssFilterProps => {
@@ -128,7 +130,7 @@ const RssForm: React.FC<{
             <Input />
           </Form.Item>
           <Select
-            mode="multiple"
+            mode="tags"
             tagRender={tagRender}
             optionRender={optionRender}
             options={filterOptions}
