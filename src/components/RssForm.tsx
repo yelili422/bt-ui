@@ -103,7 +103,11 @@ const RssForm: React.FC<{
         <Form.Item<RssProps> name="enabled" label="Enabled" style={{ display: 'none' }}>
           <Switch />
         </Form.Item>
-        <Form.Item<RssProps> name="title" label="Title">
+        <Form.Item<RssProps>
+          name="title"
+          label="Title"
+          normalize={(value) => value.trim()}
+        >
           <Input />
         </Form.Item>
         <Form.Item<RssProps>
