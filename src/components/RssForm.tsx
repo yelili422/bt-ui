@@ -164,6 +164,7 @@ const RssFormModal: React.FC = () => {
         centered={true}
         onCancel={() => setOpen(false)}
         destroyOnClose={true}
+        maskClosable={false}
         onOk={async () => {
           try {
             const formValues = await formInstance?.validateFields();
