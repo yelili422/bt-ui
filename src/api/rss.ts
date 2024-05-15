@@ -20,6 +20,7 @@ interface RssProps {
   rss_type: string;
   enabled: boolean;
   filters: Array<RssFilterProps> | null;
+  description: string | null;
 }
 
 export const useRss = () => {

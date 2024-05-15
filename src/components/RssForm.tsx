@@ -129,6 +129,9 @@ const RssForm: React.FC<{
         >
           <Input.TextArea />
         </Form.Item>
+        <Form.Item<RssProps> name="description" label="Description">
+          <Input.TextArea />
+        </Form.Item>
         <Form.Item label="Filters">
           <Form.Item<RssProps> name="filters" label="Filters" style={{ display: 'none' }}>
             <Input />

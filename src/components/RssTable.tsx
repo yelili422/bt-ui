@@ -44,6 +44,16 @@ const RssTable: React.FC = () => {
       title: 'URL',
       dataIndex: 'url',
       key: 'url',
+      render: (url: string) => (
+        <a href={url} target="_blank">
+          {url}
+        </a>
+      ),
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
     },
     {
       title: 'Action',
