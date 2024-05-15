@@ -1,6 +1,7 @@
 import { RssProps, deleteRss, updateRss, useRss } from "../api/rss";
-import { Button, Popconfirm, Switch, Table } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons'
+import { Button, Col, Popconfirm, Row, Switch, Table } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import RssFormModal from "./RssForm";
 
 const RssTable: React.FC = () => {
   const { rssList, isError, isLoading, reloadRss } = useRss();
@@ -59,33 +60,46 @@ const RssTable: React.FC = () => {
       title: 'Action',
       key: 'action',
       render: (_val: string, record: RssProps) => (
-        <Popconfirm
-          title="Delete the RSS."
-          description="Are you sure you want to delete this RSS?"
-          onConfirm={async () => {
-            await deleteRss(record.id);
-            reloadRss();
-          }}
-        >
-          <Button
-            type="primary"
-            icon={<DeleteOutlined />}
-            danger
-            shape="circle"
-          />
-        </Popconfirm>
+        <Row gutter={8}>
+          <Col>
+            <Button
+              icon={<EditOutlined />}
+              shape="circle"
+            />
+          </Col>
+          <Col>
+            <Popconfirm
+              title="Delete the RSS."
+              description="Are you sure you want to delete this RSS?"
+              onConfirm={async () => {
+                await deleteRss(record.id);
+                reloadRss();
+              }}
+            >
+              <Button
+                type="primary"
+                icon={<DeleteOutlined />}
+                danger
+                shape="circle"
+              />
+            </Popconfirm>
+          </Col>
+        </Row>
       ),
     }
   ]
 
   return (
-    <Table
-      loading={isLoading}
-      dataSource={isError ? [] : rssList}
-      columns={columns}
-      rowKey={(record) => record.id.toString()}
-      pagination={false}
-    />
+    <>
+      <Table
+        loading={isLoading}
+        dataSource={isError ? [] : rssList}
+        columns={columns}
+        rowKey={(record) => record.id.toString()}
+        pagination={false}
+      />
+      <RssFormModal />
+    </>
   );
 };
 

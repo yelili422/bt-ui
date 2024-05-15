@@ -1,15 +1,11 @@
 import './App.css'
-import RssFormModal from './components/RssForm'
-import RssTable from './components/RssTable'
+import RssPage from './pages/RssPage'
 
 function App() {
 
   return (
     <>
-      <div>
-        <RssTable />
-        <RssFormModal />
-      </div>
+      <RssPage />
     </>
   )
 }

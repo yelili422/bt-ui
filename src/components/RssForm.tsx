@@ -1,5 +1,5 @@
 import { Col, FloatButton, Form, FormInstance, Input, InputNumber, Modal, Row, Select, SelectProps, Switch, Tag } from "antd";
-import { createRss, RssProps, RssFilterProps, RssFilterAction, RssFilterRule } from "../api/rss";
+import { createRss, RssProps, RssFilterProps, RssFilterAction, RssFilterRule, updateRss } from "../api/rss";
 import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 
@@ -80,8 +80,10 @@ const optionRender: OptionRender = (option) => {
 
 const RssForm: React.FC<{
   onFormInstanceReady: (instance: FormInstance<RssProps>) => void;
+  initialValues?: RssProps;
 }> = ({
   onFormInstanceReady,
+  initialValues,
 }) => {
     const [form] = Form.useForm<RssProps>();
     useEffect(() => {
@@ -91,14 +93,7 @@ const RssForm: React.FC<{
       <Form
         layout="vertical"
         form={form}
-        initialValues={{
-          title: '',
-          season: 1,
-          rss_type: 'mikan',
-          url: '',
-          enabled: true,
-          filters: [],
-        }}
+        initialValues={initialValues}
       >
         <Form.Item<RssProps> name="enabled" label="Enabled" style={{ display: 'none' }}>
           <Switch />
@@ -151,12 +146,17 @@ const RssForm: React.FC<{
     );
   };
 
-const RssFormModal: React.FC = () => {
+const RssFormModal: React.FC<{
+  isUpdate?: boolean;
+  initialValues?: RssProps;
+}> = ({ isUpdate, initialValues }) => {
   const [formInstance, setFormInstance] = useState<FormInstance<RssProps>>();
   const [open, setOpen] = useState(false);
 
   return (
     <>
+      // TODO: Move the float button out and make this reusable for adding and updating RSS
+      // in one component.
       <FloatButton type="primary" icon={<PlusOutlined />} onClick={() => setOpen(!open)} />
       <Modal
         title="Add RSS"
@@ -168,16 +168,28 @@ const RssFormModal: React.FC = () => {
         onOk={async () => {
           try {
             const formValues = await formInstance?.validateFields();
-            await createRss(formValues!);
+            isUpdate ? await updateRss(formValues!) : await createRss(formValues!);
             setOpen(false);
           } catch (error) {
             console.error('Failed:', error);
           }
         }}
       >
-        <RssForm onFormInstanceReady={(instance) => {
-          setFormInstance(instance);
-        }} />
+        <RssForm
+          initialValues={initialValues ?? {
+            id: 0,
+            title: '',
+            season: 1,
+            rss_type: 'mikan',
+            url: '',
+            enabled: true,
+            filters: [],
+            description: '',
+          }}
+          onFormInstanceReady={(instance) => {
+            setFormInstance(instance);
+          }}
+        />
       </Modal>
     </>
   )
