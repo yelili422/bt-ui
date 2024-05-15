@@ -153,10 +153,10 @@ const RssFormModal: React.FC<{
   const [formInstance, setFormInstance] = useState<FormInstance<RssProps>>();
   const [open, setOpen] = useState(false);
 
+  // TODO: Move the float button out and make this reusable for adding and updating RSS
+  // in one component.
   return (
     <>
-      // TODO: Move the float button out and make this reusable for adding and updating RSS
-      // in one component.
       <FloatButton type="primary" icon={<PlusOutlined />} onClick={() => setOpen(!open)} />
       <Modal
         title="Add RSS"
