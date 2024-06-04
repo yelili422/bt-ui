@@ -1,10 +1,20 @@
 import { RssProps, deleteRss, updateRss, useRss } from "../api/rss";
-import { Button, Col, Popconfirm, Row, Switch, Table } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { Button, Col, FloatButton, Popconfirm, Row, Switch, Table } from 'antd';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import RssFormModal from "./RssForm";
+import { useState } from "react";
 
 const RssTable: React.FC = () => {
   const { rssList, isError, isLoading, reloadRss } = useRss();
+  const [showForm, setShowForm] = useState(false);
+  const [initialValues, setInitialValues] = useState<RssProps>();
+  const [isUpdate, setIsUpdate] = useState(false)
+
+  const editModal = (isUpdate: boolean, value: RssProps) => {
+    setIsUpdate(isUpdate)
+    setInitialValues(value)
+    setShowForm(true)
+  };
 
   const columns = [
     {
@@ -65,6 +75,7 @@ const RssTable: React.FC = () => {
             <Button
               icon={<EditOutlined />}
               shape="circle"
+              onClick={() => editModal(false, record)}
             />
           </Col>
           <Col>
@@ -98,7 +109,18 @@ const RssTable: React.FC = () => {
         rowKey={(record) => record.id.toString()}
         pagination={false}
       />
-      <RssFormModal />
+
+      <FloatButton type="primary" icon={<PlusOutlined />} onClick={() => editModal(true, {
+        id: 0,
+        title: '',
+        season: 1,
+        rss_type: 'mikan',
+        url: '',
+        enabled: true,
+        filters: [],
+        description: '',
+      })} />
+      <RssFormModal isUpdate={isUpdate} initialValues={initialValues} showForm={showForm} onClose={() => setShowForm(false)} />
     </>
   );
 };
