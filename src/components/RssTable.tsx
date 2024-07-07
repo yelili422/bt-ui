@@ -62,6 +62,11 @@ const RssTable: React.FC = () => {
       ),
     },
     {
+      title: 'Category',
+      dataIndex: 'category',
+      key: 'category',
+    },
+    {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
@@ -75,7 +80,7 @@ const RssTable: React.FC = () => {
             <Button
               icon={<EditOutlined />}
               shape="circle"
-              onClick={() => editModal(false, record)}
+              onClick={() => editModal(true, record)}
             />
           </Col>
           <Col>
@@ -110,15 +115,16 @@ const RssTable: React.FC = () => {
         pagination={false}
       />
 
-      <FloatButton type="primary" icon={<PlusOutlined />} onClick={() => editModal(true, {
+      <FloatButton type="primary" icon={<PlusOutlined />} onClick={() => editModal(false, {
         id: 0,
         title: '',
         season: 1,
         rss_type: 'mikan',
         url: '',
         enabled: true,
-        filters: [],
+        filters: ['FilenameRegex-合集'],
         description: '',
+        category: 'Bangumi',
       })} />
       <RssFormModal isUpdate={isUpdate} initialValues={initialValues} showForm={showForm} onClose={() => setShowForm(false)} />
     </>
