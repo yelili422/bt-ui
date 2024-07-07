@@ -72,20 +72,8 @@ export const usePreviewRss = (
   rss: RssProps,
   callback: (data: RssPreviewProps) => void
 ) => {
-  let url = `/api/rss/preview?url=${encodeURIComponent(rss.url)}&rss_type=${
-    rss.rss_type
-  }`;
-  if (rss.title) {
-    url += `&title=${encodeURIComponent(rss.title)}`;
-  }
-  if (rss.season) {
-    url += `&season=${rss.season}`;
-  }
-
   const { data, error, isLoading } = useSWR<RssPreviewProps>(
-    `/api/rss/preview?url=${encodeURIComponent(url)}&rss_type=${
-      rss.rss_type
-    }`,
+    `/api/rss/preview?url=${encodeURIComponent(rss.url)}&rss_type=${rss.rss_type}`,
     fetcher,
     {
       onSuccess: (data) => {
@@ -105,7 +93,4 @@ export const usePreviewRss = (
   };
 };
 
-export type {
-  RssProps,
-  RssPreviewProps,
-};
+export type { RssProps, RssPreviewProps };
